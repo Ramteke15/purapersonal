@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PuraPersonal | Event Hydration</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --gold: #b2945e;
+            --charcoal: #1a1a1a;
+            --off-white: #ffffff;
+            --soft-grey: #f9f9f9;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f8f8f8;
+            color: var(--charcoal);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 0;
+        }
+
+        .luxury-card {
+            background: var(--off-white);
+            width: 100%;
+            max-width: 380px;
+            padding: 40px;
+            border-radius: 0;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .lookbook-label {
+            font-size: 0.55rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #ccc;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .gallery-scroll {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            margin-bottom: 40px;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+        }
+        .gallery-scroll::-webkit-scrollbar { display: none; }
+
+        .gallery-item {
+            min-width: 160px;
+            height: 160px;
+            background-color: #fdfdfd;
+            border: 1px solid #f0f0f0;
+            object-fit: cover;
+        }
+
+        h2 {
+            font-weight: 300;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            color: var(--charcoal);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            margin-bottom: 12px;
+            color: #aaa;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 0;
+            border: none;
+            border-bottom: 1px solid #eaeaea;
+            background: transparent;
+            font-size: 1rem;
+            color: var(--charcoal);
+            outline: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .primary-btn {
+            width: 100%;
+            padding: 20px;
+            background-color: var(--charcoal);
+            color: white;
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            margin-top: 10px;
+        }
+
+        .primary-btn:hover {
+            background-color: var(--gold);
+        }
+
+        .secondary-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: transparent;
+            color: var(--charcoal);
+            border: 1px solid #eee;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .secondary-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        #output {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #f5f5f5;
+            display: none;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .breakdown-box {
+            background-color: #fafafa;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 2px;
+            text-align: left;
+            font-size: 0.7rem;
+        }
+
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        .free-text {
+            color: #28a745;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .savings-line {
+            color: var(--gold);
+            font-weight: bold;
+            border-top: 1px solid #eee;
+            padding-top: 8px;
+        }
+
+        .total-row {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px double #eee;
+        }
+
+        .total-price {
+            font-size: 2rem;
+            color: var(--charcoal);
+            font-weight: 300;
+            margin-bottom: 5px;
+        }
+
+        .discount-badge {
+            display: inline-block;
+            color: var(--gold);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        #finalActions { display: none; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="luxury-card">
+    <span class="lookbook-label">The Portfolio</span>
+    <div class="gallery-scroll">
+        <img class="gallery-item" src="insta 1_3.jpg" alt="Black Fox Coffee">
+        <img class="gallery-item" src="insta 2_20250202_92712107.jpg" alt="Batukbhai Jewellers">
+        <img class="gallery-item" src="insta 2 (1)_20250129_1018166.jpg" alt="The Arvind Store">
+    </div>
+
+    <h2>PuraPersonal</h2>
+    
+    <div class="input-group">
+        <label>Expected Guest Count</label>
+        <input type="number" id="guests" placeholder="e.g. 500">
+    </div>
+
+    <div class="input-group">
+        <label>Hospitality Style</label>
+        <select id="eventType">
+            <option value="1">Minimal (1 bottle/person)</option>
+            <option value="2">Executive (2 bottles/person)</option>
+            <option value="3" selected>Celebration (3 bottles/person)</option>
+        </select>
+    </div>
+
+    <button class="primary-btn" onclick="calculateQuote()">Request Proposal</button>
+
+    <div id="output">
+        <div id="discountContainer" style="display:none;">
+            <span id="outDiscount" class="discount-badge"></span>
+        </div>
+
+        <div class="breakdown-box">
+            <div class="breakdown-row">
+                <span id="bottleSummary">Premium 250ml Bottles</span>
+                <span id="standardTotal"></span>
+            </div>
+            <div class="breakdown-row">
+                <span id="boxSummary">Packaging</span>
+                <span class="free-text">INCLUDED</span>
+            </div>
+            <div class="breakdown-row">
+                <span>Bespoke Label Design</span>
+                <span class="free-text">FREE</span>
+            </div>
+            <div class="breakdown-row">
+                <span>Nagpur Logistics & Delivery</span>
+                <span class="free-text">FREE</span>
+            </div>
+            <div class="breakdown-row savings-line" id="savingsRow" style="display:none;">
+                <span id="savingsLabel">Special Discount</span>
+                <span id="savingsAmount"></span>
+            </div>
+        </div>
+
+        <div class="total-row">
+            <label>Final Investment</label>
+            <div class="total-price">₹<span id="outTotal"></span></div>
+            <div style="font-size: 0.7rem; color: #999; margin-top: 5px;">
+                Final Rate: ₹<span id="outRate"></span> / bottle
+            </div>
+        </div>
+
+        <div id="finalActions">
+            <button class="secondary-btn" onclick="generatePDF()" style="border-color: #ddd; margin-bottom: 10px;">
+                Download Proposal (PDF)
+            </button>
+            <button class="primary-btn" onclick="sendOrderWhatsApp()">
+                Place Order Directly
+            </button>
+            <a href="tel:+919209812873" style="text-decoration: none;">
+                <button class="secondary-btn">Speak with Us</button>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function calculateQuote() {
+        let guests = document.getElementById('guests').value;
+        let consumption = document.getElementById('eventType').value;
+        
+        if(guests <= 0 || guests === "") return;
+
+        let totalBottlesNeeded = guests * consumption;
+        let totalBoxes = Math.ceil(totalBottlesNeeded / 42);
+        let finalBottles = totalBoxes * 42;
+
+        let basePrice = 6.00;
+        let finalPricePerBottle = 6.00; 
+        let headline = "";
+        let percLabel = "";
+
+        if (finalBottles >= 2000) { 
+            finalPricePerBottle = 5.58; 
+            headline = "Elite Volume Curation";
+            percLabel = "Special Discount (7%)";
+        } else if (finalBottles >= 1000) { 
+            finalPricePerBottle = 5.82; 
+            headline = "Signature Partner Rate";
+            percLabel = "Special Discount (3%)";
+        }
+
+        let standardRevenue = finalBottles * basePrice;
+        let finalRevenue = finalBottles * finalPricePerBottle;
+        let totalSavings = standardRevenue - finalRevenue;
+
+        document.getElementById('bottleSummary').innerText = `Premium 250ml Bottles (${finalBottles} Bottles)`;
+        document.getElementById('boxSummary').innerText = `Units: ${totalBoxes} Boxes (42 Bottles)`;
+        document.getElementById('standardTotal').innerText = "₹" + standardRevenue.toLocaleString('en-IN');
+        document.getElementById('outRate').innerText = finalPricePerBottle.toFixed(2);
+        
+        if (totalSavings > 0) {
+            document.getElementById('savingsRow').style.display = 'flex';
+            document.getElementById('savingsLabel').innerText = percLabel;
+            document.getElementById('savingsAmount').innerText = "- ₹" + totalSavings.toLocaleString('en-IN');
+            document.getElementById('discountContainer').style.display = 'block';
+            document.getElementById('outDiscount').innerText = headline;
+        } else {
+            document.getElementById('savingsRow').style.display = 'none';
+            document.getElementById('discountContainer').style.display = 'none';
+        }
+        
+        document.getElementById('outTotal').innerText = finalRevenue.toLocaleString('en-IN');
+        document.getElementById('output').style.display = 'block';
+        document.getElementById('finalActions').style.display = 'block';
+
+        setTimeout(() => {
+            document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+    }
+
+    async function generatePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        const guests = document.getElementById('guests').value;
+        const consumption = document.getElementById('eventType').value;
+        
+        let totalBottlesNeeded = guests * consumption;
+        let totalBoxes = Math.ceil(totalBottlesNeeded / 42);
+        let finalBottles = totalBoxes * 42;
+
+        let finalPricePerBottle = 6.00; 
+        if (finalBottles >= 2000) { finalPricePerBottle = 5.58; } 
+        else if (finalBottles >= 1000) { finalPricePerBottle = 5.82; }
+
+        let finalRevenue = finalBottles * finalPricePerBottle;
+        let formattedTotal = finalRevenue.toLocaleString('en-IN');
+        let date = new Date().toLocaleDateString();
+
+        doc.setFont("times", "normal");
+        doc.setFontSize(24);
+        doc.text("PURAPERSONAL", 105, 40, { align: "center" });
+        
+        doc.setFontSize(10);
+        doc.text("Bespoke Event Hydration | Nagpur, India", 105, 48, { align: "center" });
+        doc.line(40, 55, 170, 55);
+
+        doc.setFontSize(12);
+        doc.text(`Date: ${date}`, 40, 70);
+        doc.text(`Estimated Guests: ${guests}`, 40, 80);
+        
+        doc.setFont("helvetica", "bold");
+        doc.text("Item Details", 40, 100);
+        doc.text("Investment", 170, 100, { align: "right" });
+        doc.line(40, 102, 170, 102);
+
+        doc.setFont("helvetica", "normal");
+        doc.text(`Premium 250ml Bottles (${finalBottles} Bottles)`, 40, 115);
+        doc.text(`₹ ${formattedTotal}`, 170, 115, { align: "right" });
+
+        doc.text(`Units: ${totalBoxes} Boxes (42 Bottles)`, 40, 125);
+        doc.text("INCLUDED", 170, 125, { align: "right" });
+
+        doc.text("Bespoke Label Design", 40, 135);
+        doc.text("FREE", 170, 135, { align: "right" });
+
+        doc.text("Nagpur Logistics & Delivery", 40, 145);
+        doc.text("FREE", 170, 145, { align: "right" });
+
+        doc.line(40, 155, 170, 155);
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("Total Project Investment", 40, 165);
+        doc.text(`INR ${formattedTotal}`, 170, 165, { align: "right" });
+
+        doc.setFontSize(10);
+        doc.text(`(Rate applied: INR ${finalPricePerBottle.toFixed(2)} / bottle)`, 40, 172);
+
+        doc.setFontSize(9);
+        doc.setFont("times", "italic");
+        doc.text("Handcrafted quality and premium logistics.", 105, 200, { align: "center" });
+        doc.text("Direct Contact: +91 9209812873", 105, 205, { align: "center" });
+
+        doc.save(`PuraPersonal_Proposal.pdf`);
+    }
+
+    function sendOrderWhatsApp() {
+        const bottleSum = document.getElementById('bottleSummary').innerText;
+        const boxSum = document.getElementById('boxSummary').innerText;
+        const total = document.getElementById('outTotal').innerText;
+        const rate = document.getElementById('outRate').innerText;
+
+        let message = `Hello PuraPersonal! %0A%0AI have reviewed the Lookbook and would like to place an order: %0A%0A` +
+                      `• ${bottleSum}%0A` +
+                      `• ${boxSum}%0A` +
+                      `• Final Rate: ₹${rate}/bottle %0A` +
+                      `• Total Investment: ₹${total}%0A%0A` +
+                      `Please connect with me to finalize the custom design!`;
+
+        window.open(`https://wa.me/919209812873?text=${message}`, '_blank');
+    }
+</script>
+
+</body>
+</html>
