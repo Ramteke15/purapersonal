@@ -67,13 +67,15 @@
         }
         .gallery-scroll::-webkit-scrollbar { display: none; }
 
+        /* Adjusted for 4:5 Aspect Ratio */
         .gallery-item {
-            min-width: 260px;
-            height: 260px;
+            height: 325px; /* Vertical length maintained */
+            width: 260px;  /* Calculated for 4:5 ratio (325 * 0.8) */
             background-color: #fdfdfd;
             border: 1px solid #f0f0f0;
             object-fit: cover;
             scroll-snap-align: center;
+            flex-shrink: 0;
         }
 
         .pagination-dots {
@@ -223,7 +225,7 @@
 
         @media screen and (max-width: 480px) {
             .luxury-card { padding: 30px 20px; }
-            .gallery-item { min-width: 220px; height: 220px; }
+            .gallery-item { height: 275px; width: 220px; }
             .total-price { font-size: 1.85rem; }
             input, select { font-size: 16px; }
         }
@@ -235,9 +237,9 @@
     <span class="lookbook-label">The Portfolio</span>
     <div class="gallery-container">
         <div class="gallery-scroll" id="gallery">
-            <img class="gallery-item" src="1.jpg" alt="Pura 1">
-            <img class="gallery-item" src="2.jpg" alt="Pura 2">
-            <img class="gallery-item" src="3.jpg" alt="Pura 3">
+            <img class="gallery-item" src="portfolio1.jpg" alt="Pura Curation 1">
+            <img class="gallery-item" src="portfolio2.jpg" alt="Pura Curation 2">
+            <img class="gallery-item" src="portfolio3.jpg" alt="Pura Curation 3">
         </div>
     </div>
     <div class="pagination-dots" id="dotsContainer"></div>
@@ -355,7 +357,6 @@
         let finalRevenue = finalBottles * finalPricePerBottle;
         let totalSavings = standardRevenue - finalRevenue;
 
-        // Added 250ml here
         document.getElementById('bottleSummary').innerText = `Premium 250ml ${finalBottles} Bottles`;
         document.getElementById('boxSummary').innerText = `Packaging: ${totalBoxes} Boxes`;
         document.getElementById('standardTotal').innerText = "Rs. " + standardRevenue.toLocaleString('en-IN');
@@ -403,7 +404,6 @@
         doc.setDrawColor(178, 148, 94).setLineWidth(0.5).line(40, 98, 170, 98);
 
         doc.setFont("times", "normal").setFontSize(11).setTextColor(26);
-        // Added 250ml here
         doc.text(`Premium 250ml ${finalBottles} Bottles`, 40, 110);
         doc.text(`Rs. ${standardTotalVal.toLocaleString('en-IN')}`, 170, 110, { align: "right" });
         doc.setFontSize(9).setTextColor(150).text(`(Rs. 6/bottle)`, 40, 115);
