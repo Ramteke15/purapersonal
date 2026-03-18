@@ -249,7 +249,7 @@
             <div class="breakdown-row">
                 <div>
                     <span id="bottleSummary">Premium 250ml Bottles</span>
-                    <span class="sub-label">(Rs. 6/bottle)</span>
+                    <span class="sub-label">(Rs. 7/bottle)</span>
                 </div>
                 <span id="standardTotal"></span>
             </div>
@@ -357,10 +357,10 @@
         
         if (finalBottles >= 2000) {
             rate = 6.65;
-            discountLabel = "Volume Discount";
+            discountLabel = "Elite Volume Discount";
         } else if (finalBottles >= 1000) {
             rate = 6.75;
-            discountLabel = "Signature 1K Partner Rate";
+            discountLabel = "Signature Partner Discount";
         }
         
         let finalRevenue = Math.round(finalBottles * rate);
