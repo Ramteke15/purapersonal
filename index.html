@@ -326,10 +326,10 @@
         
         if (totalSavings > 0) {
             document.getElementById('savingsRow').style.display = 'flex';
-            document.getElementById('savingsLabel').innerText = (finalBottles >= 2000) ? "Volume Discount" : "Signature 1K Partner Rate";
+            document.getElementById('savingsLabel').innerText = (finalBottles >= 2000) ? "Elite Volume Discount" : "Signature Partner Discount";
             document.getElementById('savingsAmount').innerText = "- Rs. " + Math.round(totalSavings).toLocaleString('en-IN');
             document.getElementById('discountContainer').style.display = 'block';
-            document.getElementById('outDiscount').innerText = (finalBottles >= 2000) ? "Elite Volume Curation" : "Signature Event CurationUnlocked";
+            document.getElementById('outDiscount').innerText = (finalBottles >= 2000) ? "Elite Volume Curation" : "Signature Event Curation";
         } else {
             document.getElementById('savingsRow').style.display = 'none';
             document.getElementById('discountContainer').style.display = 'none';
